@@ -51,14 +51,32 @@ const api = (() => {
     const response = await _fetchWithAuth(`${BASE_URL}/users`, {
       method: 'GET',
     });
-    return response.json();
+    const responseJson = await response.json();
+
+    const { status, message } = responseJson;
+
+    if (status !== 'success') {
+      throw new Error(message);
+    }
+
+    const { data: {users} } = responseJson;
+
+    return users;
   }
 
   async function getOwnProfile() {
     const response = await _fetchWithAuth(`${BASE_URL}/users/me`, {
       method: 'GET',
     });
-    return response.json();
+    const responseJson = await response.json();
+    const { status, message } = responseJson;
+
+    if (status !== 'success') {
+      throw new Error(message);
+    }
+    const { data: {user} } = responseJson;
+
+    return user;
   }
 
   async function createThread({ title, body, category }) {
@@ -69,6 +87,17 @@ const api = (() => {
       },
       body: JSON.stringify({ title, body, category }),
     });
+
+    const responseJson = await response.json();
+    const { status, message } = responseJson;
+
+    if (status !== 'success') {
+      throw new Error(message);
+    }
+    const { data: {thread} } = responseJson;
+
+    return thread;
+    
     return response.json();
   }
 
@@ -76,14 +105,32 @@ const api = (() => {
     const response = await fetch(`${BASE_URL}/threads`, {
       method: 'GET',
     });
-    return response.json();
+    const responseJson = await response.json();
+    const { status, message } = responseJson;
+
+    if (status !== 'success') {
+      throw new Error(message);
+    }
+
+    const { data: { threads } } = responseJson;
+
+    return threads;
   }
 
   async function getThreadDetail(threadId) {
     const response = await fetch(`${BASE_URL}/threads/${threadId}`, {
       method: 'GET',
     });
-    return response.json();
+
+    const responseJson = await response.json();
+    const { status, message } = responseJson;
+
+    if (status !== 'success') {
+      throw new Error(message);
+    }
+
+    const { data: { detailThread } } = responseJson;
+    return detailThread;
   }
 
   async function createComment(threadId, { content }) {
@@ -94,7 +141,15 @@ const api = (() => {
       },
       body: JSON.stringify({ content }),
     });
-    return response.json();
+    const responseJson = await response.json();
+    const { status, message } = responseJson;
+
+    if (status !== 'success') {
+      throw new Error(message);
+    }
+
+    const { data: { comment } } = responseJson;
+    return comment;
   }
 
   async function voteThread(threadId, voteType) {

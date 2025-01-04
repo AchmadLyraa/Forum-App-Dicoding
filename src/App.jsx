@@ -5,17 +5,31 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import Navigation from './components/Navigation';
+import DetailPage from './pages/DetailPage';
 import { asyncUnsetAuthUser} from './states/authUser/action';
-// import { asyncSetAuthUser } from './states/authUser/action';
+import { asyncPreloadProcess } from './states/isPreload/action';
 import Leaderboards from './pages/Leaderboards';
 
 function App() {
-  const { authUser} = useSelector((states) => states);
+  const {
+    authUser = null,
+    isPreload = false,
+  } = useSelector((states) => states);
+ 
   const dispatch = useDispatch();
+ 
+  useEffect(() => {
+    dispatch(asyncPreloadProcess());
+  }, [dispatch]);
 
   const onSignOut = () => {
     dispatch(asyncUnsetAuthUser());
   };
+
+  if (isPreload) {
+    return null;
+  }
+ 
 
   if (authUser === null) {
     return (
@@ -39,6 +53,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/Leaderboards" element={<Leaderboards />} />
+          <Route path="/threads/:id" element={<DetailPage />} />
         </Routes>
       </main>
     </div>

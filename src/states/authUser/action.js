@@ -17,15 +17,9 @@ function asyncSetAuthUser({ email, password }) {
       const { token } = response.data;
       api.putAccessToken(token);
 
-      const profileResponse = await api.getOwnProfile();
+      const user = await api.getOwnProfile();
 
-      if (profileResponse.status !== 'success') {
-        throw new Error(profileResponse.message || 'Failed to fetch user profile');
-      }
-
-      const authUser = profileResponse.data;
-      console.log(authUser.user);
-      dispatch(setAuthUserActionCreator(authUser.user));
+      dispatch(setAuthUserActionCreator(user));
     } catch (error) {
       alert(error.message);
     }
